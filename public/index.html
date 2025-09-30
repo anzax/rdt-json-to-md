@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reddit to Markdown</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 h-screen flex overflow-hidden">
+  <!-- Left Sidebar -->
+  <aside class="w-96 bg-white border-r border-gray-200 overflow-y-auto">
+    <div class="p-6 space-y-6">
+      <header>
+        <h1 class="text-2xl font-bold text-gray-900 mb-2">Reddit to Markdown</h1>
+        <p class="text-sm text-gray-600">Paste a Reddit post URL or username</p>
+      </header>
+
+      <!-- Thread Section -->
+      <section>
+        <h2 class="text-lg font-semibold mb-3">Fetch Thread</h2>
+        <div class="space-y-3">
+          <input
+            type="text"
+            id="postUrl"
+            placeholder="https://reddit.com/r/.../comments/..."
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+          <button
+            id="fetchThread"
+            class="w-full px-4 py-2 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
+          >
+            Fetch Thread
+          </button>
+        </div>
+      </section>
+
+      <!-- User Comments Section -->
+      <section>
+        <h2 class="text-lg font-semibold mb-3">Fetch User Comments</h2>
+        <div class="space-y-3">
+          <input
+            type="text"
+            id="username"
+            placeholder="username"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+          <button
+            id="fetchUser"
+            class="w-full px-4 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 disabled:bg-gray-400"
+          >
+            Fetch User Comments
+          </button>
+        </div>
+      </section>
+
+      <!-- Options -->
+      <section>
+        <h2 class="text-lg font-semibold mb-3">Options</h2>
+        <div class="space-y-3">
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1">Limit (max 100)</label>
+            <input type="number" id="limit" value="50" min="1" max="100" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1">Max Depth (threads, max 6)</label>
+            <input type="number" id="depth" value="4" min="1" max="6" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-gray-700 mb-1">Sort (threads)</label>
+            <select id="sort" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg">
+              <option value="confidence">Confidence</option>
+              <option value="top">Top</option>
+              <option value="new">New</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mt-4 space-y-2">
+          <label class="flex items-center space-x-2">
+            <input type="checkbox" id="hideAuto" class="rounded">
+            <span class="text-xs text-gray-700">Hide AutoModerator</span>
+          </label>
+          <label class="flex items-center space-x-2">
+            <input type="checkbox" id="hideRemoved" class="rounded">
+            <span class="text-xs text-gray-700">Hide deleted and removed</span>
+          </label>
+          <label class="flex items-center space-x-2">
+            <input type="checkbox" id="autoPaginate" class="rounded">
+            <span class="text-xs text-gray-700">Auto-paginate user comments (max 500)</span>
+          </label>
+        </div>
+      </section>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 flex flex-col bg-gray-50">
+    <div class="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-4">
+        <h2 class="text-lg font-semibold">Output</h2>
+        <div id="status" class="text-sm text-gray-600"></div>
+      </div>
+      <div class="flex items-center gap-3">
+        <div id="pagination" class="hidden items-center gap-2">
+          <button
+            id="prevPageBtn"
+            class="px-3 py-1.5 bg-gray-200 text-gray-700 text-sm rounded hover:bg-gray-300 disabled:bg-gray-100 disabled:text-gray-400"
+            disabled
+          >
+            Previous
+          </button>
+          <span id="pageInfo" class="text-sm text-gray-600">Page 1</span>
+          <button
+            id="nextPageBtn"
+            class="px-3 py-1.5 bg-gray-200 text-gray-700 text-sm rounded hover:bg-gray-300 disabled:bg-gray-100 disabled:text-gray-400"
+            disabled
+          >
+            Next
+          </button>
+        </div>
+        <button
+          id="copyBtn"
+          class="px-4 py-2 bg-gray-600 text-white text-sm rounded-lg hover:bg-gray-700 disabled:bg-gray-400"
+          disabled
+        >
+          Copy
+        </button>
+      </div>
+    </div>
+    <div class="flex-1 overflow-auto">
+      <pre id="output" class="p-6 text-sm font-mono whitespace-pre-wrap text-gray-800 min-h-full"></pre>
+    </div>
+  </main>
+
+  <script src="main.js"></script>
+</body>
+</html>
