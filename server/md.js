@@ -1,12 +1,12 @@
 function cleanText(text) {
   return text
     .replace(/\r\n/g, '\n')
-    .replace(/\n{3,}/g, '\n\n')
+    .replace(/\n{2,}/g, '\n')
     .trim();
 }
 
 export function threadToMd(post, comments) {
-  let md = `# ${post.title}\n\n`;
+  let md = `# ${post.title}\n`;
   md += `Link: ${post.url}\n`;
   md += `Subreddit: r/${post.subreddit}\n`;
   md += `Author: u/${post.author} | Created: ${post.created_iso} | Score: ${post.score}\n`;
@@ -15,14 +15,14 @@ export function threadToMd(post, comments) {
     md += `Flair: ${post.flair}\n`;
   }
 
-  md += `\n## Post Body\n\n`;
+  md += `\n## Post Body\n`;
   if (post.selftext_md) {
     md += cleanText(post.selftext_md) + '\n';
   } else {
     md += '(No text content)\n';
   }
 
-  md += `\n## Comments\n\n`;
+  md += `\n## Comments\n`;
 
   for (const comment of comments) {
     const indent = '  '.repeat(comment.depth);
@@ -48,11 +48,11 @@ export function threadToMd(post, comments) {
 }
 
 export function userCommentsToMd(username, comments) {
-  let md = `# Comments by u/${username}\n\n`;
-  md += `Fetched: ${new Date().toISOString()}\n\n`;
+  let md = `# Comments by u/${username}\n`;
+  md += `Fetched: ${new Date().toISOString()}\n`;
 
   for (const comment of comments) {
-    md += `- r/${comment.subreddit || 'unknown'}`;
+    md += `\n- r/${comment.subreddit || 'unknown'}`;
 
     if (comment.link_title) {
       const linkUrl = comment.link_permalink.startsWith('http')
@@ -62,14 +62,12 @@ export function userCommentsToMd(username, comments) {
     }
 
     md += '\n';
-    md += `${comment.created_iso} | ${comment.score} pts | [comment](${comment.permalink})\n\n`;
+    md += `${comment.created_iso} | ${comment.score} pts | [comment](${comment.permalink})\n`;
 
     const bodyLines = cleanText(comment.body_md).split('\n');
     for (const line of bodyLines) {
       md += `${line}\n`;
     }
-
-    md += '\n';
   }
 
   return md;
